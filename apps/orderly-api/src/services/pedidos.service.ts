@@ -1,6 +1,7 @@
 import prisma from '../lib/prisma';
 import { EstadoPedido } from '@prisma/client';
 import { publicar } from '../lib/rabbitmq';
+import { enviarEmail, emailCambioEstado } from '../lib/mailer';
 
 export async function listarPedidos(tenantId: string, opciones: {
   pagina: number;
@@ -59,7 +60,22 @@ export async function cambiarEstado(id: string, estado: EstadoPedido, tenantId: 
     data: { estado },
     include: { archivos: true },
   });
+
   await publicar('pedido.estado', { pedidoId: id, estado, tenantId });
+
+  // Notificar por email a los clientes del tenant cuando cambia el estado
+  const clientes = await prisma.usuario.findMany({
+    where: { tenantId, rol: 'CLIENTE' },
+    select: { email: true, nombre: true },
+  });
+  for (const cliente of clientes) {
+    await enviarEmail({
+      to: cliente.email,
+      subject: `Pedido ${pedido.referencia} — estado actualizado`,
+      html: emailCambioEstado({ nombreCliente: cliente.nombre, referencia: pedido.referencia, estado }),
+    });
+  }
+
   return actualizado;
 }
 

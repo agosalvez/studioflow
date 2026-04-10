@@ -11,6 +11,7 @@ import authRoutes from './routes/auth.routes';
 import pedidosRoutes from './routes/pedidos.routes';
 import archivosRoutes from './routes/archivos.routes';
 import adminRoutes from './routes/admin.routes';
+import internalRoutes from './routes/internal.routes';
 import { errorHandler } from './middleware/error.middleware';
 import { limitadorGeneral } from './middleware/rateLimit.middleware';
 
@@ -31,6 +32,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/pedidos', pedidosRoutes);
 app.use('/api/archivos', archivosRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/internal', internalRoutes);
 
 app.use(errorHandler);
 

@@ -12,7 +12,7 @@
         </div>
         <div class="header-right">
           <EstadoBadge :estado="pedido.estado" />
-          <select class="select-estado" :value="pedido.estado" @change="handleEstado">
+          <select v-if="!auth.esCliente" class="select-estado" :value="pedido.estado" @change="handleEstado">
             <option value="RECIBIDO">Recibido</option>
             <option value="EN_PRODUCCION">En producción</option>
             <option value="TERMINADO">Terminado</option>
@@ -31,7 +31,7 @@
       <div class="card">
         <div class="card-header">
           <h2 class="card-title">Archivos ({{ pedido.archivos.length }})</h2>
-          <label class="btn-upload">
+          <label v-if="!auth.esCliente" class="btn-upload">
             {{ subiendo ? 'Subiendo…' : '+ Añadir archivo' }}
             <input type="file" multiple @change="handleSubir" :disabled="subiendo" />
           </label>
@@ -61,11 +61,13 @@
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { usePedidosStore, type EstadoPedido, type Pedido } from '../stores/pedidos.store';
+import { useAuthStore } from '../stores/auth.store';
 import EstadoBadge from '../components/EstadoBadge.vue';
 
 const route = useRoute();
 const router = useRouter();
 const pedidosStore = usePedidosStore();
+const auth = useAuthStore();
 
 const pedido = ref<Pedido | null>(null);
 const cargando = ref(true);
