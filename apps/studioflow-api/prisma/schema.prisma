@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// --- Multi-tenant ---
+
+model Tenant {
+  id        String   @id @default(cuid())
+  nombre    String
+  slug      String   @unique
+  creadoEn  DateTime @default(now())
+
+  usuarios  Usuario[]
+  pedidos   Pedido[]
+}
+
+model Usuario {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  nombre       String
+  passwordHash String
+  rol          Rol      @default(OPERARIO)
+  creadoEn     DateTime @default(now())
+
+  tenantId     String
+  tenant       Tenant   @relation(fields: [tenantId], references: [id])
+}
+
+enum Rol {
+  ADMIN
+  OPERARIO
+  CLIENTE
+}
+
+// --- Pedidos ---
+
+model Pedido {
+  id            String       @id @default(cuid())
+  referencia    String
+  observaciones String?      @db.Text
+  estado        EstadoPedido @default(RECIBIDO)
+  creadoEn      DateTime     @default(now())
+  actualizadoEn DateTime     @updatedAt
+
+  tenantId      String
+  tenant        Tenant       @relation(fields: [tenantId], references: [id])
+
+  archivos      Archivo[]
+}
+
+enum EstadoPedido {
+  RECIBIDO
+  EN_PRODUCCION
+  TERMINADO
+  ENTREGADO
+}
+
+model Archivo {
+  id        String   @id @default(cuid())
+  nombre    String
+  ruta      String
+  tamaño    Int
+  mimeType  String
+  creadoEn  DateTime @default(now())
+
+  pedidoId  String
+  pedido    Pedido   @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+}
