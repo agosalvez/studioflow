@@ -2,12 +2,34 @@ import prisma from '../lib/prisma';
 import { EstadoPedido } from '@prisma/client';
 import { publicar } from '../lib/rabbitmq';
 
-export async function listarPedidos(tenantId: string) {
-  return prisma.pedido.findMany({
-    where: { tenantId },
-    include: { archivos: true },
-    orderBy: { creadoEn: 'desc' },
-  });
+export async function listarPedidos(tenantId: string, opciones: {
+  pagina: number;
+  limite: number;
+  estado?: EstadoPedido;
+}) {
+  const { pagina, limite, estado } = opciones;
+  const where = { tenantId, ...(estado ? { estado } : {}) };
+
+  const [total, pedidos] = await Promise.all([
+    prisma.pedido.count({ where }),
+    prisma.pedido.findMany({
+      where,
+      include: { archivos: true },
+      orderBy: { creadoEn: 'desc' },
+      skip: (pagina - 1) * limite,
+      take: limite,
+    }),
+  ]);
+
+  return {
+    datos: pedidos,
+    paginacion: {
+      total,
+      pagina,
+      limite,
+      totalPaginas: Math.ceil(total / limite),
+    },
+  };
 }
 
 export async function obtenerPedido(id: string, tenantId: string) {

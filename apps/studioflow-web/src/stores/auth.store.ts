@@ -12,15 +12,29 @@ interface Usuario {
 
 export const useAuthStore = defineStore('auth', () => {
   const token = ref<string | null>(localStorage.getItem('token'));
+  const refreshToken = ref<string | null>(localStorage.getItem('refreshToken'));
   const usuario = ref<Usuario | null>(null);
 
   const autenticado = computed(() => !!token.value);
+  const esAdmin = computed(() => usuario.value?.rol === 'ADMIN');
+  const esCliente = computed(() => usuario.value?.rol === 'CLIENTE');
 
   async function login(email: string, password: string) {
     const { data } = await api.post('/api/auth/login', { email, password });
     token.value = data.token;
+    refreshToken.value = data.refreshToken;
     localStorage.setItem('token', data.token);
+    localStorage.setItem('refreshToken', data.refreshToken);
     usuario.value = data.usuario;
+  }
+
+  async function renovarToken() {
+    if (!refreshToken.value) throw new Error('Sin refresh token');
+    const { data } = await api.post('/api/auth/refresh', { refreshToken: refreshToken.value });
+    token.value = data.token;
+    refreshToken.value = data.refreshToken;
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('refreshToken', data.refreshToken);
   }
 
   async function cargarPerfil() {
@@ -31,9 +45,11 @@ export const useAuthStore = defineStore('auth', () => {
 
   function logout() {
     token.value = null;
+    refreshToken.value = null;
     usuario.value = null;
     localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
   }
 
-  return { token, usuario, autenticado, login, cargarPerfil, logout };
+  return { token, usuario, autenticado, esAdmin, esCliente, login, renovarToken, cargarPerfil, logout };
 });

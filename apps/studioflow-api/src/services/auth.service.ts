@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import prisma from '../lib/prisma';
-import { firmarToken } from '../lib/jwt';
+import { firmarToken, firmarRefreshToken, verificarRefreshToken } from '../lib/jwt';
 
 export async function registrar(datos: {
   email: string;
@@ -19,8 +19,12 @@ export async function registrar(datos: {
     data: { email: datos.email, nombre: datos.nombre, passwordHash, tenantId: tenant.id },
   });
 
-  const token = firmarToken({ sub: usuario.id, email: usuario.email, rol: usuario.rol, tenantId: tenant.id });
-  return { token, usuario: { id: usuario.id, email: usuario.email, nombre: usuario.nombre, rol: usuario.rol } };
+  const payload = { sub: usuario.id, email: usuario.email, rol: usuario.rol, tenantId: tenant.id };
+  return {
+    token: firmarToken(payload),
+    refreshToken: firmarRefreshToken(payload),
+    usuario: { id: usuario.id, email: usuario.email, nombre: usuario.nombre, rol: usuario.rol },
+  };
 }
 
 export async function login(datos: { email: string; password: string }) {
@@ -30,8 +34,24 @@ export async function login(datos: { email: string; password: string }) {
   const valido = await bcrypt.compare(datos.password, usuario.passwordHash);
   if (!valido) throw new Error('Credenciales incorrectas');
 
-  const token = firmarToken({ sub: usuario.id, email: usuario.email, rol: usuario.rol, tenantId: usuario.tenantId });
-  return { token, usuario: { id: usuario.id, email: usuario.email, nombre: usuario.nombre, rol: usuario.rol } };
+  const payload = { sub: usuario.id, email: usuario.email, rol: usuario.rol, tenantId: usuario.tenantId };
+  return {
+    token: firmarToken(payload),
+    refreshToken: firmarRefreshToken(payload),
+    usuario: { id: usuario.id, email: usuario.email, nombre: usuario.nombre, rol: usuario.rol },
+  };
+}
+
+export async function refresh(refreshToken: string) {
+  const payload = verificarRefreshToken(refreshToken);
+  const usuario = await prisma.usuario.findUnique({ where: { id: payload.sub } });
+  if (!usuario) throw new Error('Usuario no encontrado');
+
+  const nuevoPayload = { sub: usuario.id, email: usuario.email, rol: usuario.rol, tenantId: usuario.tenantId };
+  return {
+    token: firmarToken(nuevoPayload),
+    refreshToken: firmarRefreshToken(nuevoPayload),
+  };
 }
 
 export async function crearTenant(datos: { nombre: string; slug: string }) {

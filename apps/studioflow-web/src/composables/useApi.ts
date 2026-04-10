@@ -12,10 +12,26 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (res) => res,
-  (err) => {
-    if (err.response?.status === 401) {
-      localStorage.removeItem('token');
-      window.location.href = '/login';
+  async (err) => {
+    const original = err.config;
+    if (err.response?.status === 401 && !original._retry) {
+      original._retry = true;
+      try {
+        const refreshToken = localStorage.getItem('refreshToken');
+        if (!refreshToken) throw new Error('Sin refresh token');
+        const { data } = await axios.post(
+          `${import.meta.env.VITE_API_URL ?? 'http://localhost:3000'}/api/auth/refresh`,
+          { refreshToken }
+        );
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('refreshToken', data.refreshToken);
+        original.headers.Authorization = `Bearer ${data.token}`;
+        return api(original);
+      } catch {
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(err);
   }

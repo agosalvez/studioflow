@@ -20,6 +20,15 @@ export async function login(req: Request, res: Response): Promise<void> {
   }
 }
 
+export async function refresh(req: Request, res: Response): Promise<void> {
+  try {
+    const tokens = await authService.refresh(req.body.refreshToken);
+    res.json(tokens);
+  } catch {
+    res.status(401).json({ error: 'Refresh token inválido o expirado' });
+  }
+}
+
 export async function me(req: RequestAutenticada, res: Response): Promise<void> {
   res.json(req.usuario);
 }
