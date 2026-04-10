@@ -39,12 +39,16 @@
 <script setup lang="ts">
 import { useAuthStore } from '../stores/auth.store';
 import { useRouter } from 'vue-router';
+import { useToastStore } from '../stores/toast.store';
 
 const auth = useAuthStore();
 const router = useRouter();
+const toast = useToastStore();
 
 function handleLogout() {
+  const nombre = auth.usuario?.nombre ?? 'Usuario';
   auth.logout();
+  toast.info(`Hasta pronto, ${nombre}`);
   router.push('/login');
 }
 </script>

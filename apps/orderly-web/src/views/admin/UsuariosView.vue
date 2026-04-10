@@ -55,25 +55,42 @@
 import { onMounted } from 'vue';
 import { useAdminStore, type Rol } from '../../stores/admin.store';
 import { useAuthStore } from '../../stores/auth.store';
+import { useToastStore } from '../../stores/toast.store';
 
 const adminStore = useAdminStore();
 const authStore = useAuthStore();
+const toast = useToastStore();
 
 function formatFecha(iso: string) {
   return new Date(iso).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
 async function handleCambiarRol(id: string, rol: Rol) {
-  await adminStore.cambiarRol(id, rol);
-}
-
-async function handleEliminar(id: string) {
-  if (confirm('¿Eliminar este usuario? Esta acción no se puede deshacer.')) {
-    await adminStore.eliminarUsuario(id);
+  try {
+    await adminStore.cambiarRol(id, rol);
+    toast.exito('Rol actualizado correctamente');
+  } catch {
+    toast.error('No se pudo cambiar el rol');
   }
 }
 
-onMounted(() => adminStore.cargarUsuarios());
+async function handleEliminar(id: string) {
+  if (!confirm('¿Eliminar este usuario? Esta acción no se puede deshacer.')) return;
+  try {
+    await adminStore.eliminarUsuario(id);
+    toast.exito('Usuario eliminado');
+  } catch {
+    toast.error('No se pudo eliminar el usuario');
+  }
+}
+
+onMounted(async () => {
+  try {
+    await adminStore.cargarUsuarios();
+  } catch {
+    toast.error('No se pudieron cargar los usuarios');
+  }
+});
 </script>
 
 <style scoped>

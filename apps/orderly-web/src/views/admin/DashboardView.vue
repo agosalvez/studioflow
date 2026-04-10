@@ -4,8 +4,9 @@
       <h1 class="page-title">Dashboard</h1>
     </div>
 
-    <div v-if="!adminStore.stats" class="estado-vacio">Cargando estadísticas…</div>
-    <template v-else>
+    <div v-if="cargando" class="estado-vacio">Cargando estadísticas…</div>
+    <div v-else-if="errorCarga" class="estado-vacio estado-error">No se pudieron cargar las estadísticas</div>
+    <template v-else-if="adminStore.stats">
       <div class="stats-grid">
         <div class="stat-card">
           <span class="stat-label">Total pedidos</span>
@@ -47,12 +48,26 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useAdminStore } from '../../stores/admin.store';
+import { useToastStore } from '../../stores/toast.store';
 import EstadoBadge from '../../components/EstadoBadge.vue';
 
 const adminStore = useAdminStore();
-onMounted(() => adminStore.cargarStats());
+const toast = useToastStore();
+const cargando = ref(true);
+const errorCarga = ref(false);
+
+onMounted(async () => {
+  try {
+    await adminStore.cargarStats();
+  } catch {
+    errorCarga.value = true;
+    toast.error('No se pudieron cargar las estadísticas');
+  } finally {
+    cargando.value = false;
+  }
+});
 </script>
 
 <style scoped>
@@ -73,4 +88,5 @@ onMounted(() => adminStore.cargarStats());
 .bar-track { height: 8px; background: #f4f4f5; border-radius: 999px; overflow: hidden; }
 .bar-fill { height: 100%; background: #6366f1; border-radius: 999px; transition: width 0.4s ease; }
 .estado-vacio { padding: 3rem; text-align: center; color: #a1a1aa; }
+.estado-error { color: #ef4444; }
 </style>
