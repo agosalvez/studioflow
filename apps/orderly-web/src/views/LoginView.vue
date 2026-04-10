@@ -3,7 +3,7 @@
     <div class="login-card">
       <div class="login-logo">
         <span class="logo-icon">SF</span>
-        <span class="logo-title">StudioFlow</span>
+        <span class="logo-title">Orderly</span>
       </div>
       <h1 class="login-heading">Iniciar sesión</h1>
 

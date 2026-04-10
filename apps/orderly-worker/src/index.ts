@@ -14,7 +14,7 @@ import { conectar } from './lib/rabbitmq';
 import { escucharPedidoNuevo, escucharPedidoEstado } from './handlers/pedido.handler';
 
 console.log('╔════════════════════════════════╗');
-console.log('║     StudioFlow Worker  v1.0    ║');
+console.log('║     Orderly Worker  v1.0    ║');
 console.log('╚════════════════════════════════╝');
 console.log(`Cargando configuración desde: ${envPath}`);
 console.log(`RabbitMQ: ${process.env.RABBITMQ_URL ?? '(no configurado)'}`);

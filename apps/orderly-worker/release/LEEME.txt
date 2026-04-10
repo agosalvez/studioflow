@@ -1,12 +1,12 @@
 ╔══════════════════════════════════════════╗
-║        StudioFlow Worker v1.0            ║
+║        Orderly Worker v1.0            ║
 ║  Cliente de automatización de pedidos    ║
 ╚══════════════════════════════════════════╝
 
 INSTALACIÓN
 ───────────
 1. Copia los siguientes ficheros en una carpeta de tu PC:
-   - studioflow-worker.exe
+   - orderly-worker.exe
    - .env  (copia y renombra .env.example)
 
 2. Edita el fichero .env con los datos de conexión
@@ -14,7 +14,7 @@ INSTALACIÓN
 
    RABBITMQ_URL=amqp://usuario:contraseña@servidor:5672
 
-3. Haz doble clic en studioflow-worker.exe para arrancarlo.
+3. Haz doble clic en orderly-worker.exe para arrancarlo.
    Verás un mensaje "Worker activo. Escuchando colas..."
 
 4. Deja la ventana abierta mientras trabajas.
@@ -37,4 +37,4 @@ PROBLEMAS FRECUENTES
 - La ventana se cierra sola: revisa el .env, puede
   que falte la variable RABBITMQ_URL.
 
-Soporte: contacta con tu administrador de StudioFlow.
+Soporte: contacta con tu administrador de Orderly.

@@ -57,7 +57,7 @@ export function generarHojaTrabajo(pedido: DatosPedido): string {
 </head>
 <body>
   <div class="header">
-    <div class="logo">⚡ StudioFlow</div>
+    <div class="logo">⚡ Orderly</div>
     <div>
       <div class="ref">${pedido.referencia}</div>
       <div style="font-size:0.85rem;color:#71717a">${pedido.tenant}</div>

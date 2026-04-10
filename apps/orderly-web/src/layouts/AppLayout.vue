@@ -3,7 +3,7 @@
     <aside class="sidebar">
       <div class="sidebar-logo">
         <span class="logo-icon">SF</span>
-        <span class="logo-text">StudioFlow</span>
+        <span class="logo-text">Orderly</span>
       </div>
       <nav class="sidebar-nav">
         <RouterLink to="/pedidos" class="nav-item">

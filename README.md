@@ -1,6 +1,6 @@
 <div align="center">
 
-# ⚡ StudioFlow
+# ⚡ Orderly
 
 **La plataforma SaaS que convierte el caos de tu estudio en un flujo de trabajo organizado, automatizado y escalable.**
 
@@ -22,11 +22,11 @@
 
 ---
 
-## ¿Qué es StudioFlow?
+## ¿Qué es Orderly?
 
-Antes de StudioFlow, los estudios fotográficos y talleres de impresión gestionaban sus pedidos por email, archivos dispersos en WeTransfer, hojas de cálculo y llamadas de teléfono. El resultado: pérdidas de información, errores humanos y horas de trabajo manual cada día.
+Antes de Orderly, los estudios fotográficos y talleres de impresión gestionaban sus pedidos por email, archivos dispersos en WeTransfer, hojas de cálculo y llamadas de teléfono. El resultado: pérdidas de información, errores humanos y horas de trabajo manual cada día.
 
-**StudioFlow lo centraliza todo en un único sistema digital:**
+**Orderly lo centraliza todo en un único sistema digital:**
 
 - 📥 Los clientes suben sus archivos y añaden instrucciones directamente en la plataforma
 - 📋 El equipo ve todos los pedidos en un panel, organizados y con su estado actualizado
@@ -57,7 +57,7 @@ Antes de StudioFlow, los estudios fotográficos y talleres de impresión gestion
 │                        MONOREPO                         │
 │                  (Turborepo + pnpm)                     │
 ├──────────────────┬──────────────────┬───────────────────┤
-│  studioflow-web  │  studioflow-api  │ studioflow-worker │
+│  orderly-web  │  orderly-api  │ orderly-worker │
 │   Vue 3 + Vite   │ Express + Prisma │  Node + RabbitMQ  │
 │    puerto 4200   │    puerto 3000   │    background     │
 └────────┬─────────┴────────┬─────────┴────────┬──────────┘
@@ -72,11 +72,11 @@ Antes de StudioFlow, los estudios fotográficos y talleres de impresión gestion
 ## 📦 Estructura del monorepo
 
 ```
-studioflow/
+orderly/
 ├── apps/
-│   ├── studioflow-api/       # API REST · Express · Prisma · MySQL
-│   ├── studioflow-web/       # Frontend · Vue 3 · Vite · Pinia
-│   └── studioflow-worker/    # Worker · Node.js · RabbitMQ
+│   ├── orderly-api/       # API REST · Express · Prisma · MySQL
+│   ├── orderly-web/       # Frontend · Vue 3 · Vite · Pinia
+│   └── orderly-worker/    # Worker · Node.js · RabbitMQ
 ├── packages/                 # Paquetes compartidos (según necesidad)
 ├── docker-compose.yml        # Stack completo para Portainer
 ├── .env.example              # Variables de entorno de referencia
@@ -86,9 +86,9 @@ studioflow/
 
 📖 Documentación detallada de cada app:
 
-- [studioflow-api](./apps/studioflow-api/README.md) — API REST, endpoints, autenticación
-- [studioflow-web](./apps/studioflow-web/README.md) — Frontend, vistas, stores
-- [studioflow-worker](./apps/studioflow-worker/README.md) — Worker, colas, handlers
+- [orderly-api](./apps/orderly-api/README.md) — API REST, endpoints, autenticación
+- [orderly-web](./apps/orderly-web/README.md) — Frontend, vistas, stores
+- [orderly-worker](./apps/orderly-worker/README.md) — Worker, colas, handlers
 
 ---
 
@@ -104,7 +104,7 @@ studioflow/
 
 ```bash
 git clone <repo-url>
-cd studioflow
+cd orderly
 cp .env.example .env
 pnpm install
 ```
@@ -118,7 +118,7 @@ docker compose up -d db rabbitmq
 ### 3. Migrar base de datos y cargar datos de ejemplo
 
 ```bash
-cd apps/studioflow-api
+cd apps/orderly-api
 pnpm exec prisma migrate dev --name init
 pnpm run seed
 ```
@@ -176,4 +176,4 @@ El contenedor de la API ejecuta automáticamente las migraciones y el seed al ar
 
 ## 📜 Licencia
 
-MIT © StudioFlow
+MIT © Orderly

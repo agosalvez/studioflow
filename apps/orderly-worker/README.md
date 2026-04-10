@@ -1,8 +1,8 @@
 <div align="center">
 
-# ⚙️ studioflow-worker
+# ⚙️ orderly-worker
 
-**Worker del ecosistema StudioFlow. Procesado asíncrono de pedidos en background mediante RabbitMQ.**
+**Worker del ecosistema Orderly. Procesado asíncrono de pedidos en background mediante RabbitMQ.**
 
 [![Node.js](https://img.shields.io/badge/Node.js-20-339933?logo=node.js&logoColor=white)](https://nodejs.org)
 [![RabbitMQ](https://img.shields.io/badge/RabbitMQ-3.13-FF6600?logo=rabbitmq&logoColor=white)](https://www.rabbitmq.com)
@@ -26,7 +26,7 @@ Cuando la API recibe un pedido nuevo o cambia su estado, publica un mensaje en R
 ## Estructura
 
 ```
-studioflow-worker/
+orderly-worker/
 └── src/
     ├── index.ts                  # Entrada: conecta y arranca listeners
     ├── lib/

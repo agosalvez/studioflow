@@ -24,7 +24,7 @@ app.use(express.json());
 app.use(limitadorGeneral);
 
 app.get('/health', (_req, res) => {
-  res.json({ status: 'ok', service: 'studioflow-api' });
+  res.json({ status: 'ok', service: 'orderly-api' });
 });
 
 app.use('/api/auth', authRoutes);
@@ -35,5 +35,5 @@ app.use('/api/admin', adminRoutes);
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-  logger.info(`studioflow-api corriendo en http://localhost:${PORT}`);
+  logger.info(`orderly-api corriendo en http://localhost:${PORT}`);
 });

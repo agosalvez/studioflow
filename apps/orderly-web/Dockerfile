@@ -8,18 +8,18 @@ ENV VITE_API_URL=$VITE_API_URL
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
 COPY package.json pnpm-workspace.yaml ./
-COPY apps/studioflow-web/package.json ./apps/studioflow-web/
+COPY apps/orderly-web/package.json ./apps/orderly-web/
 
-RUN pnpm install --filter studioflow-web --frozen-lockfile
+RUN pnpm install --filter orderly-web --frozen-lockfile
 
-COPY apps/studioflow-web ./apps/studioflow-web
+COPY apps/orderly-web ./apps/orderly-web
 
-RUN pnpm --filter studioflow-web run build
+RUN pnpm --filter orderly-web run build
 
 # ---- Production (nginx) ----
 FROM nginx:alpine AS runner
 
-COPY --from=builder /app/apps/studioflow-web/dist /usr/share/nginx/html
+COPY --from=builder /app/apps/orderly-web/dist /usr/share/nginx/html
 
 # Configuración nginx para Vue Router (history mode)
 RUN printf 'server {\n\

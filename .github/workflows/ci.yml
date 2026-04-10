@@ -30,18 +30,18 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Tests unitarios (API)
-        run: pnpm --filter studioflow-api test
+        run: pnpm --filter orderly-api test
 
       - name: Build API
-        run: pnpm --filter studioflow-api build
+        run: pnpm --filter orderly-api build
 
       - name: Build Web
-        run: pnpm --filter studioflow-web build
+        run: pnpm --filter orderly-web build
         env:
           VITE_API_URL: http://localhost:3000
 
       - name: Build Worker
-        run: pnpm --filter studioflow-worker build
+        run: pnpm --filter orderly-worker build
 
   docker:
     name: Build Docker images
@@ -64,7 +64,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: apps/studioflow-api/Dockerfile
+          file: apps/orderly-api/Dockerfile
           push: true
           tags: ghcr.io/${{ github.repository }}/api:latest
 
@@ -72,7 +72,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: apps/studioflow-web/Dockerfile
+          file: apps/orderly-web/Dockerfile
           push: true
           build-args: |
             VITE_API_URL=${{ vars.VITE_API_URL }}
@@ -82,6 +82,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: apps/studioflow-worker/Dockerfile
+          file: apps/orderly-worker/Dockerfile
           push: true
           tags: ghcr.io/${{ github.repository }}/worker:latest

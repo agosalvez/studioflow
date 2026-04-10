@@ -1,8 +1,8 @@
 <div align="center">
 
-# 🔌 studioflow-api
+# 🔌 orderly-api
 
-**API REST del ecosistema StudioFlow. Gestión de tenants, usuarios, pedidos y archivos.**
+**API REST del ecosistema Orderly. Gestión de tenants, usuarios, pedidos y archivos.**
 
 [![Node.js](https://img.shields.io/badge/Node.js-20-339933?logo=node.js&logoColor=white)](https://nodejs.org)
 [![Express](https://img.shields.io/badge/Express-4.18-000000?logo=express&logoColor=white)](https://expressjs.com)
@@ -17,7 +17,7 @@
 ## Estructura
 
 ```
-studioflow-api/
+orderly-api/
 ├── src/
 │   ├── index.ts              # Entrada: Express + rutas + middlewares
 │   ├── lib/
@@ -90,7 +90,7 @@ Archivo   → nombre, ruta, tamaño, mimeType, pertenece a un pedido
 | Variable | Descripción | Ejemplo |
 |---|---|---|
 | `PORT` | Puerto del servidor | `3000` |
-| `DATABASE_URL` | Conexión MySQL | `mysql://user:pass@db:3306/studioflow` |
+| `DATABASE_URL` | Conexión MySQL | `mysql://user:pass@db:3306/orderly` |
 | `JWT_SECRET` | Clave de firma JWT | `secreto_seguro` |
 | `RABBITMQ_URL` | Conexión RabbitMQ | `amqp://user:pass@rabbitmq:5672` |
 

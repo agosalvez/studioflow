@@ -22,7 +22,7 @@ export async function enviarEmail(opciones: {
   }
   try {
     await transporter.sendMail({
-      from: process.env.SMTP_FROM ?? 'StudioFlow <noreply@studioflow.app>',
+      from: process.env.SMTP_FROM ?? 'Orderly <noreply@orderly.app>',
       ...opciones,
     });
     logger.info({ to: opciones.to, subject: opciones.subject }, 'Email enviado');
@@ -44,13 +44,13 @@ export function emailCambioEstado(datos: {
   };
   return `
     <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
-      <h2 style="color:#6366f1">StudioFlow</h2>
+      <h2 style="color:#6366f1">Orderly</h2>
       <p>Hola <strong>${datos.nombreCliente}</strong>,</p>
       <p>Tu pedido <strong>${datos.referencia}</strong> ha cambiado de estado:</p>
       <div style="background:#f4f4f5;border-radius:8px;padding:1rem;text-align:center;font-size:1.2rem;font-weight:bold;color:#18181b">
         ${etiquetas[datos.estado] ?? datos.estado}
       </div>
-      <p style="color:#71717a;font-size:0.85rem;margin-top:2rem">StudioFlow — Gestión de pedidos para estudios y talleres</p>
+      <p style="color:#71717a;font-size:0.85rem;margin-top:2rem">Orderly — Gestión de pedidos para estudios y talleres</p>
     </div>
   `;
 }

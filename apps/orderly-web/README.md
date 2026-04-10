@@ -1,8 +1,8 @@
 <div align="center">
 
-# 🌐 studioflow-web
+# 🌐 orderly-web
 
-**Frontend del ecosistema StudioFlow. Panel de gestión de pedidos para estudios y talleres.**
+**Frontend del ecosistema Orderly. Panel de gestión de pedidos para estudios y talleres.**
 
 [![Vue](https://img.shields.io/badge/Vue-3.4-42b883?logo=vue.js&logoColor=white)](https://vuejs.org)
 [![Vite](https://img.shields.io/badge/Vite-5.0-646CFF?logo=vite&logoColor=white)](https://vitejs.dev)
@@ -16,7 +16,7 @@
 ## Estructura
 
 ```
-studioflow-web/
+orderly-web/
 ├── src/
 │   ├── main.ts               # Entrada: Vue + Pinia + Router
 │   ├── App.vue               # Raíz de la aplicación
