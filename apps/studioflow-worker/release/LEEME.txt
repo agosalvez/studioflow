@@ -1,0 +1,40 @@
+╔══════════════════════════════════════════╗
+║        StudioFlow Worker v1.0            ║
+║  Cliente de automatización de pedidos    ║
+╚══════════════════════════════════════════╝
+
+INSTALACIÓN
+───────────
+1. Copia los siguientes ficheros en una carpeta de tu PC:
+   - studioflow-worker.exe
+   - .env  (copia y renombra .env.example)
+
+2. Edita el fichero .env con los datos de conexión
+   que te ha proporcionado tu administrador:
+
+   RABBITMQ_URL=amqp://usuario:contraseña@servidor:5672
+
+3. Haz doble clic en studioflow-worker.exe para arrancarlo.
+   Verás un mensaje "Worker activo. Escuchando colas..."
+
+4. Deja la ventana abierta mientras trabajas.
+   Puedes minimizarla. Para parar, cierra la ventana.
+
+HOJAS DE TRABAJO
+────────────────
+Cuando se recibe un nuevo pedido o se marca como TERMINADO,
+el worker genera automáticamente una hoja de trabajo en:
+
+  (carpeta del exe)\hojas\
+
+Abre el fichero .html con cualquier navegador e imprime
+con Ctrl+P.
+
+PROBLEMAS FRECUENTES
+────────────────────
+- "RabbitMQ no disponible": comprueba la URL en .env
+  y que tienes conexión a internet/VPN.
+- La ventana se cierra sola: revisa el .env, puede
+  que falte la variable RABBITMQ_URL.
+
+Soporte: contacta con tu administrador de StudioFlow.

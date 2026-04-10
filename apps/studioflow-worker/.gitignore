@@ -1,0 +1,4 @@
+node_modules
+dist
+# El .exe compilado no se sube al repo
+release/*.exe
