@@ -16,6 +16,7 @@ export const useAuthStore = defineStore('auth', () => {
   const usuario = ref<Usuario | null>(null);
 
   const autenticado = computed(() => !!token.value);
+  const esSuperAdmin = computed(() => usuario.value?.rol === 'SUPERADMIN');
   const esAdmin = computed(() => usuario.value?.rol === 'ADMIN');
   const esCliente = computed(() => usuario.value?.rol === 'CLIENTE');
 
@@ -51,5 +52,5 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('refreshToken');
   }
 
-  return { token, usuario, autenticado, esAdmin, esCliente, login, renovarToken, cargarPerfil, logout };
+  return { token, usuario, autenticado, esSuperAdmin, esAdmin, esCliente, login, renovarToken, cargarPerfil, logout };
 });

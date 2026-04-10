@@ -32,6 +32,7 @@ model Usuario {
 }
 
 enum Rol {
+  SUPERADMIN
   ADMIN
   OPERARIO
   CLIENTE

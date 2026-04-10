@@ -6,10 +6,12 @@
         <span class="logo-text">Orderly</span>
       </div>
       <nav class="sidebar-nav">
-        <RouterLink to="/pedidos" class="nav-item">
-          <span class="nav-icon">📋</span>
-          <span>Pedidos</span>
-        </RouterLink>
+        <template v-if="!auth.esSuperAdmin">
+          <RouterLink to="/pedidos" class="nav-item">
+            <span class="nav-icon">📋</span>
+            <span>Pedidos</span>
+          </RouterLink>
+        </template>
         <template v-if="auth.esAdmin">
           <div class="nav-separator">Admin</div>
           <RouterLink to="/admin/dashboard" class="nav-item">
@@ -19,6 +21,13 @@
           <RouterLink to="/admin/usuarios" class="nav-item">
             <span class="nav-icon">👥</span>
             <span>Usuarios</span>
+          </RouterLink>
+        </template>
+        <template v-if="auth.esSuperAdmin">
+          <div class="nav-separator">Super Admin</div>
+          <RouterLink to="/superadmin/tenants" class="nav-item">
+            <span class="nav-icon">🏢</span>
+            <span>Tenants</span>
           </RouterLink>
         </template>
       </nav>

@@ -50,7 +50,7 @@ async function handleLogin() {
   cargando.value = true;
   try {
     await auth.login(email.value, password.value);
-    router.push('/pedidos');
+    router.push(auth.esSuperAdmin ? '/superadmin/tenants' : '/pedidos');
   } catch (e: any) {
     toast.error(e.response?.data?.error ?? 'Error al iniciar sesión');
   } finally {

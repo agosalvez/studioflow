@@ -6,11 +6,38 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('Sembrando datos de ejemplo…');
 
-  // --- Tenant demo ---
+  // --- Tenant sistema (superadmin) ---
+  const tenantSistema = await prisma.tenant.upsert({
+    where: { slug: 'sistema' },
+    update: {},
+    create: { nombre: 'Sistema', slug: 'sistema' },
+  });
+
+  const hashSuper = await bcrypt.hash('superadmin123', 10);
+  await prisma.usuario.upsert({
+    where: { email: 'superadmin@orderly.com' },
+    update: {},
+    create: {
+      email: 'superadmin@orderly.com',
+      nombre: 'Super Admin',
+      passwordHash: hashSuper,
+      rol: Rol.SUPERADMIN,
+      tenantId: tenantSistema.id,
+    },
+  });
+
+  // --- Tenant demo 1 ---
   const tenant = await prisma.tenant.upsert({
     where: { slug: 'estudio-demo' },
     update: {},
     create: { nombre: 'Estudio Demo', slug: 'estudio-demo' },
+  });
+
+  // --- Tenant demo 2 ---
+  const tenant2 = await prisma.tenant.upsert({
+    where: { slug: 'foto-madrid' },
+    update: {},
+    create: { nombre: 'Foto Madrid', slug: 'foto-madrid' },
   });
 
   // --- Usuarios ---
@@ -157,12 +184,79 @@ async function main() {
     });
   }
 
+  // --- Usuarios Foto Madrid ---
+  await prisma.usuario.upsert({
+    where: { email: 'admin@fotomadrid.com' },
+    update: {},
+    create: {
+      email: 'admin@fotomadrid.com',
+      nombre: 'Marta Gómez',
+      passwordHash: hashAdmin,
+      rol: Rol.ADMIN,
+      tenantId: tenant2.id,
+    },
+  });
+  await prisma.usuario.upsert({
+    where: { email: 'cliente@fotomadrid.com' },
+    update: {},
+    create: {
+      email: 'cliente@fotomadrid.com',
+      nombre: 'Pedro Sanz',
+      passwordHash: hashCliente,
+      rol: Rol.CLIENTE,
+      tenantId: tenant2.id,
+    },
+  });
+
+  // --- Pedidos Foto Madrid ---
+  const pedidosFotoMadrid: {
+    referencia: string; observaciones: string; estado: EstadoPedido;
+    diasAtras: number; archivos: { nombre: string; tamaño: number; mimeType: string }[];
+  }[] = [
+    {
+      referencia: 'FM-2026-001', observaciones: 'Reportaje de bautizo, 20x30cm mate.',
+      estado: EstadoPedido.EN_PRODUCCION, diasAtras: 3,
+      archivos: [{ nombre: 'bautizo.zip', tamaño: 180_000_000, mimeType: 'application/zip' }],
+    },
+    {
+      referencia: 'FM-2026-002', observaciones: 'Canvas familiar 50x70.',
+      estado: EstadoPedido.RECIBIDO, diasAtras: 1,
+      archivos: [{ nombre: 'familia.jpg', tamaño: 9_000_000, mimeType: 'image/jpeg' }],
+    },
+    {
+      referencia: 'FM-2026-003', observaciones: null as unknown as string,
+      estado: EstadoPedido.ENTREGADO, diasAtras: 8,
+      archivos: [{ nombre: 'evento.zip', tamaño: 400_000_000, mimeType: 'application/zip' }],
+    },
+  ];
+
+  for (const datos of pedidosFotoMadrid) {
+    const existe = await prisma.pedido.findFirst({ where: { referencia: datos.referencia, tenantId: tenant2.id } });
+    if (existe) continue;
+    const fecha = new Date();
+    fecha.setDate(fecha.getDate() - datos.diasAtras);
+    await prisma.pedido.create({
+      data: {
+        referencia: datos.referencia, observaciones: datos.observaciones,
+        estado: datos.estado, tenantId: tenant2.id, creadoEn: fecha,
+        archivos: {
+          create: datos.archivos.map((a) => ({
+            nombre: a.nombre, ruta: `uploads/${tenant2.id}/seed/${a.nombre}`,
+            tamaño: a.tamaño, mimeType: a.mimeType,
+          })),
+        },
+      },
+    });
+  }
+
   console.log('✓ Seed completado.');
   console.log('');
   console.log('Usuarios de acceso:');
-  console.log('  admin@demo.com     / admin123     (ADMIN)');
-  console.log('  operario@demo.com  / operario123  (OPERARIO)');
-  console.log('  cliente@demo.com   / cliente123   (CLIENTE)');
+  console.log('  superadmin@orderly.com / superadmin123 (SUPERADMIN)');
+  console.log('  admin@demo.com         / admin123      (ADMIN  — Estudio Demo)');
+  console.log('  operario@demo.com      / operario123   (OPERARIO — Estudio Demo)');
+  console.log('  cliente@demo.com       / cliente123    (CLIENTE  — Estudio Demo)');
+  console.log('  admin@fotomadrid.com   / admin123      (ADMIN  — Foto Madrid)');
 }
 
 main()

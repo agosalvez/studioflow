@@ -25,6 +25,14 @@ export const router = createRouter({
             { path: 'usuarios', component: () => import('../views/admin/UsuariosView.vue') },
           ],
         },
+        {
+          path: 'superadmin',
+          meta: { soloSuperAdmin: true },
+          children: [
+            { path: '', redirect: '/superadmin/tenants' },
+            { path: 'tenants', component: () => import('../views/superadmin/TenantsView.vue') },
+          ],
+        },
       ],
     },
   ],
@@ -36,4 +44,5 @@ router.beforeEach(async (to) => {
   if (to.path === '/login' && auth.autenticado) return '/pedidos';
   if (auth.autenticado && !auth.usuario) await auth.cargarPerfil();
   if (to.meta.soloAdmin && !auth.esAdmin) return '/pedidos';
+  if (to.meta.soloSuperAdmin && !auth.esSuperAdmin) return '/pedidos';
 });
