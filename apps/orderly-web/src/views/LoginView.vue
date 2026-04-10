@@ -7,6 +7,10 @@
       </div>
       <h1 class="login-heading">Iniciar sesión</h1>
 
+      <div v-if="sesionExpirada" class="aviso-expiracion">
+        Tu sesión ha expirado. Vuelve a iniciar sesión.
+      </div>
+
       <form @submit.prevent="handleLogin" class="login-form">
         <div class="field">
           <label>Email</label>
@@ -17,8 +21,6 @@
           <input v-model="password" type="password" placeholder="••••••••" required />
         </div>
 
-        <p v-if="error" class="error-msg">{{ error }}</p>
-
         <button type="submit" class="btn-primary" :disabled="cargando">
           {{ cargando ? 'Entrando…' : 'Entrar' }}
         </button>
@@ -28,26 +30,29 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, computed } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import { useAuthStore } from '../stores/auth.store';
+import { useToastStore } from '../stores/toast.store';
 
 const email = ref('');
 const password = ref('');
-const error = ref('');
 const cargando = ref(false);
 
 const auth = useAuthStore();
 const router = useRouter();
+const route = useRoute();
+const toast = useToastStore();
+
+const sesionExpirada = computed(() => route.query.sesion === 'expirada');
 
 async function handleLogin() {
-  error.value = '';
   cargando.value = true;
   try {
     await auth.login(email.value, password.value);
     router.push('/pedidos');
   } catch (e: any) {
-    error.value = e.response?.data?.error ?? 'Error al iniciar sesión';
+    toast.error(e.response?.data?.error ?? 'Error al iniciar sesión');
   } finally {
     cargando.value = false;
   }
@@ -125,10 +130,14 @@ async function handleLogin() {
 .field input:focus {
   border-color: #6366f1;
 }
-.error-msg {
-  color: #ef4444;
+.aviso-expiracion {
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  color: #92400e;
+  border-radius: 8px;
+  padding: 0.65rem 0.85rem;
   font-size: 0.85rem;
-  margin: 0;
+  margin-bottom: 0.5rem;
 }
 .btn-primary {
   padding: 0.7rem;

@@ -9,10 +9,12 @@ INSTALACIÓN
    - orderly-worker.exe
    - .env  (copia y renombra .env.example)
 
-2. Edita el fichero .env con los datos de conexión
-   que te ha proporcionado tu administrador:
+2. Edita el fichero .env con los datos que te ha
+   proporcionado tu administrador:
 
    RABBITMQ_URL=amqp://usuario:contraseña@servidor:5672
+   API_INTERNAL_URL=http://servidor:3000
+   INTERNAL_API_KEY=clave_proporcionada
 
 3. Haz doble clic en orderly-worker.exe para arrancarlo.
    Verás un mensaje "Worker activo. Escuchando colas..."
@@ -32,9 +34,11 @@ con Ctrl+P.
 
 PROBLEMAS FRECUENTES
 ────────────────────
-- "RabbitMQ no disponible": comprueba la URL en .env
-  y que tienes conexión a internet/VPN.
-- La ventana se cierra sola: revisa el .env, puede
-  que falte la variable RABBITMQ_URL.
+- "RabbitMQ no disponible": comprueba RABBITMQ_URL en .env
+  y que tienes conexión al servidor.
+- La hoja de trabajo no tiene datos del pedido: comprueba
+  API_INTERNAL_URL e INTERNAL_API_KEY en .env.
+- La ventana se cierra sola: revisa que el .env existe y
+  tiene todas las variables configuradas.
 
 Soporte: contacta con tu administrador de Orderly.

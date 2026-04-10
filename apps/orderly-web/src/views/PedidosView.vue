@@ -99,11 +99,13 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { usePedidosStore, type EstadoPedido } from '../stores/pedidos.store';
 import { useAuthStore } from '../stores/auth.store';
+import { useToastStore } from '../stores/toast.store';
 import EstadoBadge from '../components/EstadoBadge.vue';
 
 const router = useRouter();
 const pedidosStore = usePedidosStore();
 const auth = useAuthStore();
+const toast = useToastStore();
 
 const mostrarModal = ref(false);
 const creando = ref(false);
@@ -137,13 +139,22 @@ async function handleCrear() {
     await pedidosStore.crear(form.value);
     mostrarModal.value = false;
     form.value = { referencia: '', observaciones: '' };
+    toast.exito('Pedido creado correctamente');
+  } catch {
+    toast.error('No se pudo crear el pedido');
   } finally {
     creando.value = false;
   }
 }
 
 async function handleEliminar(id: string) {
-  if (confirm('¿Eliminar este pedido?')) await pedidosStore.eliminar(id);
+  if (!confirm('¿Eliminar este pedido?')) return;
+  try {
+    await pedidosStore.eliminar(id);
+    toast.exito('Pedido eliminado');
+  } catch {
+    toast.error('No se pudo eliminar el pedido');
+  }
 }
 
 onMounted(() => pedidosStore.cargar({ pagina: 1 }));

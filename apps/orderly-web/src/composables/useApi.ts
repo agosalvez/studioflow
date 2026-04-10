@@ -30,7 +30,8 @@ api.interceptors.response.use(
       } catch {
         localStorage.removeItem('token');
         localStorage.removeItem('refreshToken');
-        window.location.href = '/login';
+        window.location.href = '/login?sesion=expirada';
+        return Promise.reject(err);
       }
     }
     return Promise.reject(err);

@@ -62,12 +62,14 @@ import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { usePedidosStore, type EstadoPedido, type Pedido } from '../stores/pedidos.store';
 import { useAuthStore } from '../stores/auth.store';
+import { useToastStore } from '../stores/toast.store';
 import EstadoBadge from '../components/EstadoBadge.vue';
 
 const route = useRoute();
 const router = useRouter();
 const pedidosStore = usePedidosStore();
 const auth = useAuthStore();
+const toast = useToastStore();
 
 const pedido = ref<Pedido | null>(null);
 const cargando = ref(true);
@@ -86,7 +88,12 @@ function formatTamaño(bytes: number) {
 
 async function handleEstado(e: Event) {
   const estado = (e.target as HTMLSelectElement).value as EstadoPedido;
-  pedido.value = await pedidosStore.cambiarEstado(pedido.value!.id, estado);
+  try {
+    pedido.value = await pedidosStore.cambiarEstado(pedido.value!.id, estado);
+    toast.exito('Estado actualizado');
+  } catch {
+    toast.error('No se pudo actualizar el estado');
+  }
 }
 
 async function handleSubir(e: Event) {
@@ -98,6 +105,9 @@ async function handleSubir(e: Event) {
       await pedidosStore.subirArchivo(pedido.value!.id, file);
     }
     pedido.value = await pedidosStore.obtener(pedido.value!.id);
+    toast.exito('Archivo(s) subido(s) correctamente');
+  } catch {
+    toast.error('Error al subir el archivo');
   } finally {
     subiendo.value = false;
     (e.target as HTMLInputElement).value = '';
@@ -105,8 +115,14 @@ async function handleSubir(e: Event) {
 }
 
 onMounted(async () => {
-  pedido.value = await pedidosStore.obtener(route.params.id as string);
-  cargando.value = false;
+  try {
+    pedido.value = await pedidosStore.obtener(route.params.id as string);
+  } catch {
+    toast.error('No se pudo cargar el pedido');
+    router.push('/pedidos');
+  } finally {
+    cargando.value = false;
+  }
 });
 </script>
 
